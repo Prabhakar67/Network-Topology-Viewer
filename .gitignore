@@ -1,0 +1,32 @@
+# Ignore node_modules everywhere
+node_modules/
+**/node_modules/
+
+# Build folders
+dist/
+build/
+coverage/
+
+# Environment files
+.env
+.env.*
+server/.env
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Misc
+.cache/
+.temp/
