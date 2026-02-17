@@ -1,10 +1,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactFlow, {
-    Background,
-    Controls,
-    addEdge,
-    applyNodeChanges,
+    Background, Controls, addEdge, applyNodeChanges,
 } from "reactflow";
 import type { Node, Connection } from "reactflow";
 import "reactflow/dist/style.css";
@@ -15,6 +12,7 @@ import DeviceNode from "../DeviceNode";
 import Drawer from "../../ui/Drawer/Drawer";
 import deviceService from "../../../services/deviceService";
 import connectionService from "../../../services/connectionService";
+import DeviceFilters from "../../devices/DeviceFilters";
 
 const nodeTypes = {
     device: DeviceNode,
@@ -26,10 +24,13 @@ const TopologyCanvas = () => {
 
     const [nodes, setNodes] = useState<Node[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [selectedEdge, setSelectedEdge] = useState<any>(null)
 
     // Build nodes from devices
     useEffect(() => {
-        const formatted = devices.map((device) => ({
+        const formatted = filteredDevices.map((device) => ({
             id: String(device.id),
             type: "device",
             position: {
@@ -46,6 +47,20 @@ const TopologyCanvas = () => {
         setNodes(formatted);
     }, [devices]);
 
+    const filteredDevices = devices.filter((d) => {
+        const matchesSearch =
+            d.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesStatus =
+            statusFilter === "" || d.status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    const onEdgeClicked = (_: any, edge: any) => {
+        setSelectedEdge(edge);
+    };
+
     // Build edges from connections
     const edges = useMemo(() => {
         return connections.map((conn) => ({
@@ -56,36 +71,6 @@ const TopologyCanvas = () => {
             animated: conn.status === "online",
         }));
     }, [connections]);
-
-    // Handle drag
-    // const onNodesChange = useCallback(
-    //     (changes: any) => {
-    //         // Update UI immediately
-    //         setNodes((nds) => applyNodeChanges(changes, nds));
-
-    //         // Persist position when drag stops
-    //         const positionChange = changes.find(
-    //             (change: any) =>
-    //                 change.type === "position" &&
-    //                 change.dragging === false &&
-    //                 change.position
-    //         );
-
-    //         if (!positionChange) return;
-
-    //         const nodeId = Number(positionChange.id);
-    //         const device = devices.find((d) => d.id === nodeId);
-
-    //         if (!device) return;
-
-    //         const { x, y } = positionChange.position;
-
-    //         if (x === undefined || y === undefined) return;
-
-    //         deviceService.updatePosition(device.id, x, y);
-    //     },
-    //     [devices]
-    // );
 
 
     const onNodesChange = useCallback(
@@ -134,11 +119,50 @@ const TopologyCanvas = () => {
         [refreshConnections]
     );
 
+    const drawerStyle: React.CSSProperties = {
+        position: "fixed",
+        top: 0,
+        right: 0,
+        width: 320,
+        height: "100vh",
+        background: "#1f2937",
+        color: "white",
+        padding: 20,
+        zIndex: 1000,
+    };
+
 
     return (
         <div style={{ display: "flex", height: "100vh", width: "100%" }}>
             {/* Graph */}
             <div style={{ flex: 1, height: "100%" }}>
+                <DeviceFilters
+                    onSearch={setSearchTerm}
+                    onStatusFilter={setStatusFilter}
+                />
+
+                <button
+                    style={{
+                        position: "absolute",
+                        top: 20,
+                        left: 20,
+                        zIndex: 1000,
+                        padding: "8px 12px",
+                    }}
+                    onClick={() =>
+                        setSelectedDevice({
+                            name: "",
+                            type: "server",
+                            status: "online",
+                            ip_address: "",
+                            position_x: 200,
+                            position_y: 200,
+                        })
+                    }
+                >
+                    Add Device
+                </button>
+
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
@@ -146,6 +170,7 @@ const TopologyCanvas = () => {
                     onNodesChange={onNodesChange}
                     onConnect={onConnect}
                     onNodeDragStop={onNodeDragStop}
+                    onEdgeClick={onEdgeClicked}
                     fitView
                 >
                     <Background />
@@ -159,12 +184,138 @@ const TopologyCanvas = () => {
                 onClose={() => setSelectedDevice(null)}
             >
                 {selectedDevice && (
-                    <>
-                        <h2>{selectedDevice.name}</h2>
-                        <p>Status: {selectedDevice.status}</p>
-                        <p>IP: {selectedDevice.ip_address}</p>
-                    </>
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            right: 0,
+                            width: 300,
+                            height: "100vh",
+                            background: "#1f2937",
+                            color: "white",
+                            padding: 20,
+                            zIndex: 200,
+                        }}
+                    >
+                        <h3>Edit Device</h3>
+
+                        <input
+                            value={selectedDevice.name}
+                            onChange={(e) =>
+                                setSelectedDevice({
+                                    ...selectedDevice,
+                                    name: e.target.value,
+                                })
+                            }
+                            style={{ width: "100%", marginBottom: 10 }}
+                        />
+
+                        <select
+                            value={selectedDevice.status}
+                            onChange={(e) =>
+                                setSelectedDevice({
+                                    ...selectedDevice,
+                                    status: e.target.value,
+                                })
+                            }
+                            style={{ width: "100%", marginBottom: 10 }}
+                        >
+                            <option value="online">Online</option>
+                            <option value="warning">Warning</option>
+                            <option value="offline">Offline</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+
+                        <button
+                            onClick={async () => {
+                                if (selectedDevice.id) {
+                                    // EDIT MODE
+                                    await deviceService.update(
+                                        selectedDevice.id,
+                                        selectedDevice
+                                    );
+                                } else {
+                                    // ADD MODE
+                                    await deviceService.create(selectedDevice);
+                                }
+
+                                await refreshDevices();
+                                setSelectedDevice(null);
+                            }}
+                        >
+                            Save
+                        </button>
+
+
+                        <button
+                            style={{ marginLeft: 10 }}
+                            onClick={async () => {
+                                await deviceService.delete(selectedDevice.id);
+                                await refreshDevices();
+                                setSelectedDevice(null);
+                            }}
+                        >
+                            Delete
+                        </button>
+
+                        <button
+                            style={{ marginLeft: 10 }}
+                            onClick={() => setSelectedDevice(null)}
+                        >
+                            Close
+                        </button>
+                    </div>
                 )}
+
+
+
+                {selectedEdge && (
+                    <div style={drawerStyle}>
+                        <h3>Edit Connection</h3>
+
+                        <input
+                            value={selectedEdge.label || ""}
+                            onChange={(e) =>
+                                setSelectedEdge({
+                                    ...selectedEdge,
+                                    label: e.target.value,
+                                })
+                            }
+                        />
+
+                        <button
+                            onClick={async () => {
+                                await connectionService.update(
+                                    Number(selectedEdge.id),
+                                    { label: selectedEdge.label }
+                                );
+                                await refreshConnections();
+                                setSelectedEdge(null);
+                            }}
+                        >
+                            Save
+                        </button>
+
+                        <button
+                            onClick={async () => {
+                                await connectionService.delete(
+                                    Number(selectedEdge.id)
+                                );
+                                await refreshConnections();
+                                setSelectedEdge(null);
+                            }}
+                        >
+                            Delete
+                        </button>
+
+                        <button onClick={() => setSelectedEdge(null)}>
+                            Close
+                        </button>
+                    </div>
+                )}
+
+
+
             </Drawer>
         </div>
     );

@@ -7,7 +7,7 @@ router.get("/", deviceController.getDevices);
 router.post("/", deviceController.createDevice);
 router.delete("/:id", deviceController.deleteDevice);
 router.put("/:id", deviceController.updateDevice);
-router.patch("/:id/position", deviceController.updateDevicePosition);
+router.patch("/:id/updateDevice", deviceController.updateDevicePosition);
 
 
 export default router;

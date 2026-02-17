@@ -38,6 +38,7 @@ const Drawer = ({ open, onClose, children }: DrawerProps) => {
                     boxShadow: "-4px 0 10px rgba(0,0,0,0.5)",
                 }}
             >
+
                 {children}
             </div>
         </>

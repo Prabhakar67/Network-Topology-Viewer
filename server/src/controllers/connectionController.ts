@@ -19,6 +19,35 @@ export const createConnection = async (req: Request, res: Response) => {
     }
 };
 
+export const updateConnection = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const id = Array.isArray(req.params.id)
+            ? req.params.id[0]
+            : req.params.id;
+
+        const { label } = req.body;
+
+        const updatedConnection =
+            await connectionService.updateConnection(id, label);
+
+        if (!updatedConnection) {
+            return res.status(404).json({
+                error: "Connection not found",
+            });
+        }
+
+        res.json("Connection updated" + updatedConnection);
+    } catch (err) {
+        res.status(500).json({
+            error: "Failed to update connection",
+        });
+    }
+};
+
+
 export const deleteConnection = async (req: Request, res: Response) => {
     try {
         const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;

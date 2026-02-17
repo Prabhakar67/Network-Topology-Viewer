@@ -24,7 +24,7 @@
 //       <h1>Network Topology Viewer</h1>
 
 //       <ul>
-//         {devices.map((device) => (
+//         {((device) => (
 //           <li key={device.id}>
 //             {device.name} - {device.type} - {device.status}
 //           </li>

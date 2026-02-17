@@ -5,6 +5,7 @@ const router = Router();
 
 router.get("/", connectionController.getConnections);
 router.post("/", connectionController.createConnection);
+router.put("/:id", connectionController.updateConnection);
 router.delete("/:id", connectionController.deleteConnection);
 
 export default router;

@@ -1,18 +1,21 @@
 import { useDevices } from "../../../hooks/useDevices";
 
 const DeviceList = () => {
-    const { devices, loading } = useDevices();
+    const { filteredDevices, loading } = useDevices();
 
     if (loading) return <div>Loading...</div>;
 
     return (
-        <ul>
-            {devices.map((device) => (
-                <li key={device.id}>
-                    {device.name} - {device.status}
-                </li>
-            ))}
-        </ul>
+        <>
+            <ul>
+                <h2>Devices with Status</h2>
+                {filteredDevices.map((device) => (
+                    <li key={device.id}>
+                        {device.name} - {device.status}
+                    </li>
+                ))}
+            </ul>
+        </>
     );
 };
 

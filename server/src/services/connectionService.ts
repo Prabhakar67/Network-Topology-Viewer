@@ -31,6 +31,22 @@ export const createConnection = async (data: any) => {
     return result.rows[0];
 };
 
+export const updateConnection = async (
+    id: string,
+    label: string
+) => {
+    const result = await pool.query(
+        `UPDATE connections
+     SET label = $1
+     WHERE id = $2
+     RETURNING *`,
+        [label, id]
+    );
+
+    return result.rows[0];
+};
+
+
 export const deleteConnection = async (id: string) => {
     await pool.query("DELETE FROM connections WHERE id = $1", [id]);
 };
