@@ -7,6 +7,7 @@ interface Props {
 
 const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
     const [search, setSearch] = useState("");
+    const [status, setStatus] = useState("");
 
     return (
         <div style={{ marginBottom: 10, display: "flex", gap: 10 }}>
@@ -15,8 +16,9 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
                 placeholder="Search device..."
                 value={search}
                 onChange={(e) => {
-                    setSearch(e.target.value);
-                    onSearch(e.target.value);
+                    const value = e.target.value;
+                    setSearch(value);
+                    onSearch(value);
                 }}
                 style={{
                     padding: "6px 10px",
@@ -26,7 +28,12 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
             />
 
             <select
-                onChange={(e) => onStatusFilter(e.target.value)}
+                value={status}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setStatus(value);
+                    onStatusFilter(value);
+                }}
                 style={{
                     padding: "6px 10px",
                     borderRadius: 6,
