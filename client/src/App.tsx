@@ -6,8 +6,8 @@ import TopologyCanvas from "./components/topology/TopologyCanvas";
 function App() {
   return (<>
     <ThemeToggle />
-    <Sidebar />
-    <div style={{ display: "flex", height: "100vh" }}>
+    {/* <Sidebar /> */}
+    <div>
       <TopologyCanvas />
     </div>
   </>
@@ -15,3 +15,5 @@ function App() {
 }
 
 export default App;
+
+// div- style={{ display: "flex", height: "100vh" }}

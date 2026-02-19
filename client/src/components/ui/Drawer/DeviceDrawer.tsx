@@ -1,4 +1,7 @@
+
+
 import { useEffect, useState } from "react";
+import DeviceForm from "../../devices/DeviceForm/DeviceForm";
 
 interface Props {
     device: any;
@@ -10,48 +13,52 @@ interface Props {
 const DeviceDrawer = ({ device, onClose, onSave, onDelete }: Props) => {
     const [localDevice, setLocalDevice] = useState<any>(device);
 
-    // 🔥 sync when device changes
     useEffect(() => {
-        if (device) {
-            setLocalDevice(device);
-        }
+        if (device) setLocalDevice(device);
     }, [device]);
 
-    // 🛑 VERY IMPORTANT GUARD
     if (!localDevice) return null;
 
     return (
-        <div style={{ padding: 20 }}>
-            <h3>Edit Device</h3>
+        <div className="fixed top-0 right-0 z-50 h-screen w-[340px] border-l border-gray-300 bg-white p-4 overflow-y-auto">
 
-            <input
-                value={localDevice.name || ""}
-                onChange={(e) =>
-                    setLocalDevice({ ...localDevice, name: e.target.value })
-                }
+            <div className="mb-4 flex items-center">
+                <h3 className="mb-3 text-lg font-semibold text-gray-800">
+                    {localDevice.id ? "Edit Device" : "Add Device"}
+                </h3>
+
+                <button
+                    onClick={onClose}
+                    className="ml-auto rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
+                >
+                    ✕
+                </button>
+            </div>
+
+            {/* FORM */}
+            <DeviceForm
+                device={localDevice}
+                onChange={(d) => setLocalDevice(d)}
             />
 
-            <select
-                value={localDevice.status || "online"}
-                onChange={(e) =>
-                    setLocalDevice({ ...localDevice, status: e.target.value })
-                }
-            >
-                <option value="online">Online</option>
-                <option value="warning">Warning</option>
-                <option value="offline">Offline</option>
-                <option value="maintenance">Maintenance</option>
-            </select>
-
-            <button onClick={() => onSave(localDevice)}>Save</button>
-
-            {localDevice.id && (
-                <button onClick={() => onDelete(localDevice.id)}>
-                    Delete
+            {/* ACTIONS */}
+            <div className="mt-4 flex gap-2">
+                <button
+                    onClick={() => onSave(localDevice)}
+                    className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm text-white"
+                >
+                    Save
                 </button>
-            )}
 
-            <button onClick={onClose}>Close</button>
+                {localDevice.id && (
+                    <button
+                        onClick={() => onDelete(localDevice.id)}
+                        className="rounded bg-red-600 px-3 py-2 text-sm text-white"
+                    >
+                        Delete
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

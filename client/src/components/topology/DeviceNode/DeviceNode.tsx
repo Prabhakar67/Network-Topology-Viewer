@@ -8,42 +8,48 @@ interface Props {
     };
 }
 
-const getBorderColor = (status?: string) => {
+const statusBorderClass = (status?: string) => {
     switch (status) {
         case "online":
-            return "#22c55e";
+            return "border-green-500";
         case "warning":
-            return "#facc15";
+            return "border-yellow-400";
         case "offline":
-            return "#ef4444";
+            return "border-red-500";
         case "maintenance":
-            return "#3b82f6";
+            return "border-blue-500";
         default:
-            return "#999";
+            return "border-gray-400";
     }
 };
 
 const DeviceNode = ({ data }: Props) => {
     return (
         <div
-            // onClick={data.onClick}
             onClick={() => {
-                console.log("NODE CLICKED");
                 data.onClick?.();
             }}
-
-            style={{
-                padding: 12,
-                borderRadius: 8,
-                border: `2px solid ${getBorderColor(data.status)}`,
-                background: "#ffffff",
-                minWidth: 120,
-                textAlign: "center",
-                fontWeight: 600,
-                color: "#111827",   // 👈 important: text color
-            }}
+            className={`
+        min-w-[120px]
+        rounded-lg
+        border-2
+        ${statusBorderClass(data.status)}
+        bg-white
+        dark:bg-gray-900
+        text-gray-900
+        dark:text-gray-100
+        font-semibold
+        text-center
+        px-3
+        py-2
+        cursor-pointer
+        shadow-sm
+        hover:shadow-md
+        transition
+      `}
         >
-            <div>{data.label}</div>
+            <div className="mb-1">{data.label}</div>
+
             <Handle type="target" position={Position.Top} />
             <Handle type="source" position={Position.Bottom} />
         </div>

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-
+/* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -26,8 +26,8 @@
   --rf-controls-bg-color: #1f2937;
   --rf-controls-color: #ffffff;
   --rf-controls-border-color: #374151;
-}
-
+} */
+/* 
 .dark .react-flow__controls button {
   background: white !important;
   color: white !important;
@@ -93,4 +93,4 @@ button:focus-visible {
 
 :root.dark button {
   background-color: #1a1a1a;
-}
+} */

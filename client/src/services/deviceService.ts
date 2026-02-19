@@ -14,6 +14,11 @@ const deviceService = {
         return res.data;
     },
 
+    getById: async (id: number) => {
+        const res = await api.get(`/devices/${id}`);
+        return res.data;
+    },
+
     updatePosition: async (
         id: number,
         position_x: number,

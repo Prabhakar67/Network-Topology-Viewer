@@ -24,7 +24,7 @@ const ConnectionDrawer = ({
     if (!localEdge) return null;
 
     return (
-        <div style={{ padding: 20 }}>
+        <div>
             <h3>Edit Connection</h3>
 
             <input

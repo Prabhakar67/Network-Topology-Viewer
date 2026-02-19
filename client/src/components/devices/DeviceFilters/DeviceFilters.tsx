@@ -10,7 +10,7 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
     const [status, setStatus] = useState("");
 
     return (
-        <div style={{ marginBottom: 10, display: "flex", gap: 10 }}>
+        <div>
             <input
                 type="text"
                 placeholder="Search device..."
@@ -20,11 +20,6 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
                     setSearch(value);
                     onSearch(value);
                 }}
-                style={{
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
-                }}
             />
 
             <select
@@ -33,11 +28,6 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
                     const value = e.target.value;
                     setStatus(value);
                     onStatusFilter(value);
-                }}
-                style={{
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
                 }}
             >
                 <option value="">All Status</option>

@@ -12,8 +12,9 @@ import Drawer from "../../ui/Drawer/Drawer";
 import deviceService from "../../../services/deviceService";
 import connectionService from "../../../services/connectionService";
 import DeviceDrawer from "../../ui/Drawer/DeviceDrawer";
-import TopologyToolbar from "./TopologyToolbar";
 import DeviceFilters from "../../devices/DeviceFilters";
+import AddDevice from "../../ui/Button/Button";
+import Sidebar from "../../layout/Sidebar/Sidebar";
 
 
 
@@ -57,7 +58,11 @@ const TopologyCanvas = () => {
             data: {
                 label: device.name,
                 status: device.status,
-                onClick: () => setSelectedDevice(device),
+                onClick: async () => {
+                    const fullDevice = await deviceService.getById(device.id);
+                    setSelectedDevice(fullDevice);
+                }
+                ,
             },
         }));
 
@@ -128,13 +133,45 @@ const TopologyCanvas = () => {
         [refreshConnections]
     );
 
+    // ✅ SAVE handler
+    const handleSaveDevice = async (device: any) => {
+        try {
+            if (device.id) {
+                // EDIT
+                await deviceService.update(device.id, device);
+            } else {
+                // ADD
+                await deviceService.create(device);
+            }
+
+            await refreshDevices();   // 🔥 VERY IMPORTANT
+            setSelectedDevice(null);  // close drawer
+        } catch (err) {
+            console.error("Save device failed", err);
+        }
+    };
+
+    // ✅ DELETE handler
+    const handleDeleteDevice = async (id: number) => {
+        try {
+            await deviceService.delete(id);
+            await refreshDevices();   // 🔥 VERY IMPORTANT
+            setSelectedDevice(null);  // close drawer
+        } catch (err) {
+            console.error("Delete device failed", err);
+        }
+    };
+
+
 
     return (
         <div style={{ display: "flex", height: "100vh", width: "100%" }}>
             {/* Graph */}
             <div style={{ flex: 1, height: "100%" }}>
 
-                <TopologyToolbar
+
+                <Sidebar filteredDevices={filteredDevices} />
+                <AddDevice
                     onSearch={setSearchTerm}
                     onStatusFilter={setStatusFilter}
                     onAddDevice={() =>
@@ -179,21 +216,10 @@ const TopologyCanvas = () => {
                     <DeviceDrawer
                         device={selectedDevice}
                         onClose={() => setSelectedDevice(null)}
-                        onSave={async (device) => {
-                            if (device.id) {
-                                await deviceService.update(device.id, device);
-                            } else {
-                                await deviceService.create(device);
-                            }
-                            await refreshDevices();
-                            setSelectedDevice(null);
-                        }}
-                        onDelete={async (id) => {
-                            await deviceService.delete(id);
-                            await refreshDevices();
-                            setSelectedDevice(null);
-                        }}
+                        onSave={handleSaveDevice}
+                        onDelete={handleDeleteDevice}
                     />
+
                 )}
             </Drawer>
 

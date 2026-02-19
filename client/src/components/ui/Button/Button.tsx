@@ -1,49 +1,20 @@
-import React from "react";
-import deviceService from "../../../services/deviceService";
-import { useState } from "react";
+interface Props {
+    onSearch: (v: string) => void;
+    onStatusFilter: (v: string) => void;
+    onAddDevice: () => void;
+}
 
-type Device = {
-    name: string;
-    type: "router" | "switch" | "firewall" | "server" | "access_point" | "endpoint";
-    status: "online" | "offline" | "warning" | "maintenance";
-    ip_address: string;
-    position_x: number;
-    position_y: number;
-};
-
-type Props = {
-    setSelectedDevice: (device: Device) => void;
-};
-
-
-
-const AddDeviceButton: React.FC<Props> = () => {
-    const [selectedDevice, setSelectedDevice] = useState<any>(null);
-    const handleAddDevice = () => {
-        setSelectedDevice({
-            name: "",
-            type: "server",
-            status: "online",
-            ip_address: "",
-            position_x: 200,
-            position_y: 200,
-        });
-    };
-
+const AddDevice = ({ onAddDevice }: Props) => {
     return (
-        <button
-            style={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                zIndex: 1000,
-                padding: "8px 12px",
-            }}
-            onClick={handleAddDevice}
-        >
-            Add Device
-        </button>
+        <div className="mb-2 flex items-center gap-2 border-b border-gray-300 bg-white px-2 py-2">
+            <button
+                onClick={onAddDevice}
+                className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-800 hover:bg-gray-100"
+            >
+                Add Device
+            </button>
+        </div>
     );
 };
 
-export default AddDeviceButton;
+export default AddDevice;

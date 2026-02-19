@@ -59,3 +59,25 @@ export const updateDevicePosition = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Failed to update position" });
     }
 };
+
+
+
+export const getDeviceById = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+
+        if (isNaN(id)) {
+            return res.status(400).json({ error: "Invalid device id" });
+        }
+
+        const device = await deviceService.getDeviceById(id);
+
+        if (!device) {
+            return res.status(404).json({ error: "Device not found" });
+        }
+
+        res.json(device);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch device" });
+    }
+};
