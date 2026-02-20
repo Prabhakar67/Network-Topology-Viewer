@@ -43,7 +43,7 @@ const DeviceDetails = ({ device, onClose }: Props) => {
 
             <button
                 onClick={onClose}
-                className="mt-3 rounded border border-gray-300 px-3 py-1 text-xs hover:bg-gray-100"
+                className="  py-1 px-2 rounded-md text-gray-700 hover:text-white hover:bg-red-600 transition duration-200"
             >
                 Close
             </button>

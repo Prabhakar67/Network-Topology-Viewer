@@ -1,19 +1,20 @@
 
-import Sidebar from "./components/layout/Sidebar";
-import ThemeToggle from "./components/layout/ThemeToggle/ThemeToggle";
+import { Toaster } from "react-hot-toast";
+import Header from "./components/layout/Header/Header";
 import TopologyCanvas from "./components/topology/TopologyCanvas";
 
 function App() {
   return (<>
-    <ThemeToggle />
-    {/* <Sidebar /> */}
-    <div>
-      <TopologyCanvas />
-    </div>
+
+    <Toaster
+      position="top-right"
+      toastOptions={{ duration: 3000, }} />
+    <Header />
+    {/* <div> */}
+    <TopologyCanvas />
+    {/* </div> */}
   </>
   );
 }
 
 export default App;
-
-// div- style={{ display: "flex", height: "100vh" }}
