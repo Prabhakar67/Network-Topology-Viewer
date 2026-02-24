@@ -4,8 +4,7 @@ interface Props {
 }
 
 const Header = ({
-    title = "Network Topology Viewer",
-    onToggleTheme,
+    title = "Network Topology Viewer"
 }: Props) => {
     return (
         <header className="flex h-14 w-full items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm">

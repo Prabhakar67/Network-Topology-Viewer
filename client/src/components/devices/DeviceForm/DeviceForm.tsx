@@ -8,7 +8,6 @@ interface Props {
 const DeviceForm = ({ device, onChange }: Props) => {
     const [localDevice, setLocalDevice] = useState<any>(device);
 
-    // sync when parent device changes
     useEffect(() => {
         setLocalDevice(device);
     }, [device]);

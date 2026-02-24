@@ -32,13 +32,11 @@ const deviceService = {
         return res.data;
     },
 
-    // UPDATE DEVICE (PUT)
     update: async (id: number, data: Partial<Device>) => {
         const res = await api.put(`/devices/${id}`, data);
         return res.data;
     },
 
-    // DELETE DEVICE
     delete: async (id: number) => {
         const res = await api.delete(`/devices/${id}`);
         return res.data;

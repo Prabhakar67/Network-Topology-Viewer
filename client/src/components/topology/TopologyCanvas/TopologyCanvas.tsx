@@ -5,7 +5,6 @@ import ReactFlow, {
     Controls,
     applyNodeChanges,
     type Node,
-    type Connection,
     type Edge,
 } from "reactflow";
 import "reactflow/dist/style.css";
@@ -14,18 +13,21 @@ import { useDevices } from "../../../hooks/useDevices";
 import { useConnections } from "../../../hooks/useConnections";
 
 import DeviceNode from "../DeviceNode";
+import ConnectionEdge from "../ConnectionEdge/ConnectionEdge";
+
 import Drawer from "../../ui/Drawer/Drawer";
 import DeviceDrawer from "../../ui/Drawer/DeviceDrawer";
+import ConnectionDrawer from "../../ui/Drawer/ConnectionDrawer";
+
 import DeviceFilters from "../../devices/DeviceFilters";
 import AddDevice from "../../ui/Button/Button";
 import Sidebar from "../../layout/Sidebar/Sidebar";
 
 import deviceService from "../../../services/deviceService";
 import connectionService from "../../../services/connectionService";
-import ConnectionDrawer from "../../ui/Drawer/ConnectionDrawer";
-import { notify } from "../../ui/Toast/toast"
 
-/* ----------------------------- HELPERS ----------------------------- */
+import { notify } from "../../ui/Toast/toast";
+
 const createEmptyDevice = () => ({
     name: "",
     type: "server",
@@ -40,7 +42,6 @@ const nodeTypes = {
 };
 
 const TopologyCanvas = () => {
-    /* ----------------------------- STATE ----------------------------- */
     const [nodes, setNodes] = useState<Node[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
     const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
@@ -50,7 +51,6 @@ const TopologyCanvas = () => {
     const { devices, refresh: refreshDevices } = useDevices();
     const { connections, refresh: refreshConnections } = useConnections();
 
-    /* ----------------------------- FILTERED DEVICES ----------------------------- */
     const filteredDevices = useMemo(() => {
         return devices.filter((device) => {
             const matchesSearch = device.name
@@ -64,7 +64,6 @@ const TopologyCanvas = () => {
         });
     }, [devices, searchTerm, statusFilter]);
 
-    /* ----------------------------- NODES ----------------------------- */
     useEffect(() => {
         const formattedNodes: Node[] = filteredDevices.map((device) => ({
             id: String(device.id),
@@ -86,24 +85,12 @@ const TopologyCanvas = () => {
         setNodes(formattedNodes);
     }, [filteredDevices]);
 
+    const { edges, onConnect } = ConnectionEdge({
+        connections,
+        onEdgeClick: setSelectedEdge,
+        refreshConnections,
+    });
 
-    const edges = useMemo(() => {
-        return connections.map((conn) => ({
-            id: String(conn.id),
-            source: String(conn.source_device_id),
-            target: String(conn.target_device_id),
-            label: conn.label,
-            animated: conn.status === "online",
-
-            // 🔥 IMPORTANT
-            status: conn.status,
-            bandwidth: conn.bandwidth,
-            connection_type: conn.connection_type,
-        }));
-    }, [connections]);
-
-
-    /* ----------------------------- HANDLERS ----------------------------- */
     const onNodesChange = useCallback((changes: any) => {
         setNodes((nds) => applyNodeChanges(changes, nds));
     }, []);
@@ -116,43 +103,19 @@ const TopologyCanvas = () => {
                     node.position.x,
                     node.position.y
                 );
-                notify.success("device position update successfuly");
+                notify.success("Device position updated successfully");
             } catch (error) {
                 console.error("Position update failed", error);
+                notify.error("Failed to update device position");
             }
         },
         []
     );
 
-    const onConnect = useCallback(
-        async (params: Connection) => {
-            if (!params.source || !params.target) return;
-
-            try {
-                await connectionService.create({
-                    source_device_id: Number(params.source),
-                    target_device_id: Number(params.target),
-                    connection_type: "ethernet",
-                    bandwidth: "1Gbps",
-                    label: "New Link",
-                    status: "online",
-                });
-
-                await refreshConnections();
-                notify.success("new connection successfuly");
-            } catch (error) {
-                console.error("Connection create failed", error);
-                notify.error("connection create failed");
-            }
-        },
-        [refreshConnections]
-    );
-
-    const onEdgeClick = useCallback((_: any, edge: Edge) => {
-        setSelectedEdge(edge);
+    const handleAddDevice = useCallback(() => {
+        setSelectedDevice(createEmptyDevice());
     }, []);
 
-    /* ----------------------------- DEVICE CRUD ----------------------------- */
     const handleSaveDevice = async (device: any) => {
         try {
             if (device.id) {
@@ -167,7 +130,7 @@ const TopologyCanvas = () => {
             setSelectedDevice(null);
         } catch (error) {
             console.error("Save device failed", error);
-            notify.error("Failed to add/update device");
+            notify.error("Failed to save device");
         }
     };
 
@@ -176,31 +139,24 @@ const TopologyCanvas = () => {
             await deviceService.delete(id);
             await refreshDevices();
             setSelectedDevice(null);
-            notify.success("device deleted successfully");
+            notify.success("Device deleted successfully");
         } catch (error) {
             console.error("Delete device failed", error);
-            notify.error("failed to delete device");
+            notify.error("Failed to delete device");
         }
     };
 
-    /* ----------------------------- ADD DEVICE ----------------------------- */
-    const handleAddDevice = useCallback(() => {
-        setSelectedDevice(createEmptyDevice());
-    }, []);
-
     const handleSaveConnection = async (edge: any) => {
         try {
-            await connectionService.update(
-                Number(edge.id),
-                { label: edge.label }
-            );
-
+            await connectionService.update(Number(edge.id), {
+                label: edge.label,
+            });
             await refreshConnections();
             setSelectedEdge(null);
-            notify.success("connection updated successfuly");
-        } catch (err) {
-            console.error("Update connection failed", err);
-            notify.error("failed to update connection");
+            notify.success("Connection updated successfully");
+        } catch (error) {
+            console.error("Update connection failed", error);
+            notify.error("Failed to update connection");
         }
     };
 
@@ -208,18 +164,17 @@ const TopologyCanvas = () => {
         try {
             await connectionService.delete(id);
             await refreshConnections();
-            setSelectedEdge(null); // close drawer
-            notify.success("connection deleted successfuly")
-        } catch (err) {
-            console.error("Delete connection failed", err);
+            setSelectedEdge(null);
+            notify.success("Connection deleted successfully");
+        } catch (error) {
+            console.error("Delete connection failed", error);
+            notify.error("Failed to delete connection");
         }
     };
 
-
-    /* ----------------------------- RENDER ----------------------------- */
     return (
         <div style={{ display: "flex", height: "100vh", width: "100%" }}>
-            {/* Graph */}
+            {/* Graph Area */}
             <div style={{ flex: 1, height: "100%" }}>
                 <Sidebar filteredDevices={filteredDevices} />
 
@@ -241,7 +196,7 @@ const TopologyCanvas = () => {
                     onNodesChange={onNodesChange}
                     onConnect={onConnect}
                     onNodeDragStop={onNodeDragStop}
-                    onEdgeClick={onEdgeClick}
+                    onEdgeClick={(_, edge) => setSelectedEdge(edge)}
                     fitView
                 >
                     <Background />
@@ -249,8 +204,11 @@ const TopologyCanvas = () => {
                 </ReactFlow>
             </div>
 
-            {/* Drawer */}
-            <Drawer open={!!selectedDevice} onClose={() => setSelectedDevice(null)}>
+            {/* Device Drawer */}
+            <Drawer
+                open={!!selectedDevice}
+                onClose={() => setSelectedDevice(null)}
+            >
                 {selectedDevice && (
                     <DeviceDrawer
                         device={selectedDevice}
@@ -261,7 +219,11 @@ const TopologyCanvas = () => {
                 )}
             </Drawer>
 
-            <Drawer open={!!selectedEdge} onClose={() => setSelectedEdge(null)}>
+            {/* Connection Drawer */}
+            <Drawer
+                open={!!selectedEdge}
+                onClose={() => setSelectedEdge(null)}
+            >
                 {selectedEdge && (
                     <ConnectionDrawer
                         edge={selectedEdge}
@@ -276,3 +238,4 @@ const TopologyCanvas = () => {
 };
 
 export default TopologyCanvas;
+

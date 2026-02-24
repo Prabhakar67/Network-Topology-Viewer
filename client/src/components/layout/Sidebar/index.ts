@@ -1,1 +1,1 @@
-export {default} from "../../devices/DeviceList"
+export { default } from "../../layout/Sidebar/Sidebar"
