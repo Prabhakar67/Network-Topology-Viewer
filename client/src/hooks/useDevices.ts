@@ -24,7 +24,7 @@ export const useDevices = () => {
     fetchDevices();
   }, []);
 
-  // ✅ Filtering logic
+  // Filtering logic
   const filteredDevices = useMemo(() => {
     return devices.filter((device) => {
       const matchesSearch = device.name

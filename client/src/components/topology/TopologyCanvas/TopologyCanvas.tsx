@@ -20,13 +20,13 @@ import DeviceDrawer from "../../ui/Drawer/DeviceDrawer";
 import ConnectionDrawer from "../../ui/Drawer/ConnectionDrawer";
 
 import DeviceFilters from "../../devices/DeviceFilters";
-import AddDevice from "../../ui/Button/Button";
 import Sidebar from "../../layout/Sidebar/Sidebar";
 
 import deviceService from "../../../services/deviceService";
 import connectionService from "../../../services/connectionService";
 
 import { notify } from "../../ui/Toast/toast";
+import ButtonComponent from "../../ui/Button/Button";
 
 const createEmptyDevice = () => ({
     name: "",
@@ -47,9 +47,11 @@ const TopologyCanvas = () => {
     const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { devices, refresh: refreshDevices } = useDevices();
     const { connections, refresh: refreshConnections } = useConnections();
+
 
     const filteredDevices = useMemo(() => {
         return devices.filter((device) => {
@@ -103,7 +105,9 @@ const TopologyCanvas = () => {
                     node.position.x,
                     node.position.y
                 );
-                notify.success("Device position updated successfully");
+                if (node.dragging) {
+                    notify.success("Device position updated successfully");
+                };
             } catch (error) {
                 console.error("Position update failed", error);
                 notify.error("Failed to update device position");
@@ -176,9 +180,20 @@ const TopologyCanvas = () => {
         <div style={{ display: "flex", height: "100vh", width: "100%" }}>
             {/* Graph Area */}
             <div style={{ flex: 1, height: "100%" }}>
-                <Sidebar filteredDevices={filteredDevices} />
+                <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="rounded-md border bg-white px-3 py-2 shadow"
+                >
+                    ☰
+                </button>
+                <Sidebar
+                    open={sidebarOpen}
+                    onClose={() => setSidebarOpen(false)}
+                    devices={filteredDevices}
+                />
 
-                <AddDevice
+                <ButtonComponent
+                    title={"Add Device"}
                     onSearch={setSearchTerm}
                     onStatusFilter={setStatusFilter}
                     onAddDevice={handleAddDevice}
