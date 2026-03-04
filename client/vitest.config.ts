@@ -1,9 +1,13 @@
-import { defineConfig } from 'vitest/config';
+
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
     globals: true,
-    setupFiles: './src/setupTests.ts',
+    setupFiles: "./src/setupTests.ts",
+
+    pool: "forks",
+    isolate: false,
   },
 });

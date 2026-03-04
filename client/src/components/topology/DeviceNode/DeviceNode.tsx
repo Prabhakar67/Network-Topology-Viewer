@@ -35,9 +35,7 @@ const DeviceNode = ({ data }: Props) => {
         border-2
         ${statusBorderClass(data.status)}
         bg-white
-        dark:bg-gray-900
         text-gray-900
-        dark:text-gray-100
         font-semibold
         text-center
         px-3

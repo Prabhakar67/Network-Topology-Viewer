@@ -22,7 +22,6 @@ const Drawer = ({ open, onClose, children }: DrawerProps) => {
             {/* Drawer Panel */}
             <div
                 className={`absolute top-0 right-0 h-full w-80 transform bg-white p-5 shadow-xl transition-transform duration-300
-                    dark:bg-gray-900
                     ${open ? "translate-x-0" : "translate-x-full"}`}
                 onClick={(e) => e.stopPropagation()}
             >

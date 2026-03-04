@@ -18,7 +18,7 @@ const ConnectionDrawer = ({
     if (!edge) return null;
 
     return (
-        <div className="fixed top-0 right-0 z-50 h-screen w-[320px] border-l border-gray-200 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 p-4 shadow-xl">
+        <div className="fixed top-0 right-0 z-50 h-screen w-[320px] border-l border-gray-200 bg-white p-4 shadow-xl">
 
             {/* Header */}
             <div className="mb-4 flex items-center justify-between">

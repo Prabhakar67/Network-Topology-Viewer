@@ -24,8 +24,9 @@ const DeviceForm = ({ device, onChange }: Props) => {
     return (
         <div className="space-y-2">
             <div>
-                <label className="text-sm">Name</label>
+                <label htmlFor="name" className="text-sm">Name</label>
                 <input
+                    id="name"
                     className={inputClass}
                     value={localDevice.name || ""}
                     onChange={(e) => update("name", e.target.value)}
@@ -33,8 +34,9 @@ const DeviceForm = ({ device, onChange }: Props) => {
             </div>
 
             <div>
-                <label className="text-sm">Type</label>
+                <label htmlFor="type" className="text-sm">Type</label>
                 <select
+                    id="type"
                     className={inputClass}
                     value={localDevice.type || "server"}
                     onChange={(e) => update("type", e.target.value)}
@@ -47,8 +49,9 @@ const DeviceForm = ({ device, onChange }: Props) => {
             </div>
 
             <div>
-                <label className="text-sm">Status</label>
+                <label htmlFor="status" className="text-sm">Status</label>
                 <select
+                    id="status"
                     className={inputClass}
                     value={localDevice.status || "online"}
                     onChange={(e) => update("status", e.target.value)}
