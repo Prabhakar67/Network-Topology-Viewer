@@ -184,7 +184,7 @@ const TopologyCanvas = () => {
                     onClick={() => setSidebarOpen(true)}
                     className="rounded-md border bg-white px-3 py-2 shadow"
                 >
-                    ☰
+                    ☰ View Devices
                 </button>
                 <Sidebar
                     open={sidebarOpen}
@@ -192,17 +192,23 @@ const TopologyCanvas = () => {
                     devices={filteredDevices}
                 />
 
-                <ButtonComponent
-                    title={"Add Device"}
-                    onSearch={setSearchTerm}
-                    onStatusFilter={setStatusFilter}
-                    onAddDevice={handleAddDevice}
-                />
+                <div className="flex items-center justify-center">
+                    <ButtonComponent
+                        title={"Add Device"}
+                        onSearch={setSearchTerm}
+                        onStatusFilter={setStatusFilter}
+                        onAddDevice={handleAddDevice}
+                    />
 
-                <DeviceFilters
-                    onSearch={setSearchTerm}
-                    onStatusFilter={setStatusFilter}
-                />
+                </div>
+
+                <div className="flex items-center justify-center">
+                    <DeviceFilters
+                        onSearch={setSearchTerm}
+                        onStatusFilter={setStatusFilter}
+                    />
+
+                </div>
 
                 <ReactFlow
                     nodes={nodes}
