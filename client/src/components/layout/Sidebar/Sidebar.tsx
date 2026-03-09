@@ -1,62 +1,53 @@
-
 import { useState } from "react";
 
-interface SidebarProps {
-    open: boolean;
-    onClose: () => void;
+interface DeviceListProps {
     devices: any[];
 }
 
-const Sidebar = ({ open, onClose, devices }: SidebarProps) => {
+const DeviceList = ({ devices }: DeviceListProps) => {
     const [selectedDevice, setSelectedDevice] = useState<any | null>(null);
 
-    if (!open) return null;
-
     return (
-        <div className="fixed inset-0 z-40">
-            {/* overlay */}
-            <div
-                className="absolute inset-0 bg-black/40"
-                onClick={onClose}
-            />
+        <div className="h-screen w-full bg-white p-6 overflow-y-auto">
+            <h2 className="mb-4 text-xl font-semibold">Devices</h2>
 
-            {/* sidebar panel */}
-            <div
-                className="absolute left-0 top-0 h-full w-72 bg-white border-r border-gray-200 p-4 shadow-xl"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Devices</h2>
-                    <button onClick={onClose}>✕</button>
-                </div>
+            {/* Device List */}
+            <ul className="space-y-2">
+                {devices.map((d) => (
+                    <li
+                        key={d.id}
+                        className="flex justify-between rounded border p-3 text-sm"
+                    >
+                        <span>{d.name}</span>
 
-                {/* Device list */}
-                <ul className="space-y-2 text-sm">
-                    {devices.map((d) => (
-                        <li key={d.id} className="rounded border p-2 flex justify-between">
-                            <span>{d.name}</span>
+                        <button
+                            className="text-blue-600 text-xs"
+                            onClick={() => setSelectedDevice(d)}
+                        >
+                            Details
+                        </button>
+                    </li>
+                ))}
+            </ul>
 
-                            <button
-                                className="text-blue-500 text-xs"
-                                onClick={() => setSelectedDevice(d)}
-                            >
-                                Details
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* Device Details Modal */}
+            {/* Overlay Details */}
             {selectedDevice && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black/40" onClick={() => setSelectedDevice(null)} />
 
+                    {/* overlay */}
+                    <div
+                        className="absolute inset-0 bg-black/40"
+                        onClick={() => setSelectedDevice(null)}
+                    />
+
+                    {/* modal */}
                     <div className="relative bg-white p-6 rounded shadow-lg w-96">
+
                         <div className="flex justify-between mb-4">
                             <h3 className="text-lg font-semibold">
                                 Device Details
                             </h3>
+
                             <button onClick={() => setSelectedDevice(null)}>
                                 ✕
                             </button>
@@ -65,7 +56,7 @@ const Sidebar = ({ open, onClose, devices }: SidebarProps) => {
                         <div className="space-y-2 text-sm">
                             {Object.entries(selectedDevice).map(([key, value]) => (
                                 <p key={key}>
-                                    <b>{key.toUpperCase()}:</b> {String(value)}
+                                    <b>{key.replaceAll("_", " ")}:</b> {String(value)}
                                 </p>
                             ))}
                         </div>
@@ -78,6 +69,7 @@ const Sidebar = ({ open, onClose, devices }: SidebarProps) => {
                                 Close
                             </button>
                         </div>
+
                     </div>
                 </div>
             )}
@@ -85,4 +77,4 @@ const Sidebar = ({ open, onClose, devices }: SidebarProps) => {
     );
 };
 
-export default Sidebar;
+export default DeviceList;

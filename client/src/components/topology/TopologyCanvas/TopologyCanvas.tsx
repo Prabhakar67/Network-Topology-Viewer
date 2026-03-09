@@ -180,18 +180,6 @@ const TopologyCanvas = () => {
         <div style={{ display: "flex", height: "100vh", width: "100%" }}>
             {/* Graph Area */}
             <div style={{ flex: 1, height: "100%" }}>
-                <button
-                    onClick={() => setSidebarOpen(true)}
-                    className="rounded-md border bg-white px-3 py-2 shadow"
-                >
-                    ☰ View Devices
-                </button>
-                <Sidebar
-                    open={sidebarOpen}
-                    onClose={() => setSidebarOpen(false)}
-                    devices={filteredDevices}
-                />
-
                 <div className="flex items-center justify-center">
                     <ButtonComponent
                         title={"Add Device"}

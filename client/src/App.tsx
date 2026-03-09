@@ -1,7 +1,7 @@
 
 import { Toaster } from "react-hot-toast";
 import Header from "./components/layout/Header/Header";
-import TopologyCanvas from "./components/topology/TopologyCanvas";
+import HomePage from "./components/layout/Homepage/Homepage";
 
 function App() {
   return (<>
@@ -9,7 +9,8 @@ function App() {
       position="top-right"
       toastOptions={{ duration: 3000, }} />
     <Header />
-    <TopologyCanvas />
+    {/* <TopologyCanvas /> */}
+    <HomePage />
   </>
   );
 }
