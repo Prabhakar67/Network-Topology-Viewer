@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import DeviceForm from "../../devices/DeviceForm/DeviceForm";
+import ButtonComponent from "../Button/Button";
 
 interface Props {
     device: any;
@@ -43,21 +44,20 @@ const DeviceDrawer = ({ device, onClose, onSave, onDelete }: Props) => {
 
             {/* ACTIONS */}
             <div className="mt-4 flex gap-2">
-                <button
+                <ButtonComponent
+                    title="Save"
                     onClick={() => onSave(localDevice)}
-                    className="flex-1 rounded bg-blue-600 px-3 py-2 text-sm text-white"
-                >
-                    Save
-                </button>
+                    className="bg-blue-600 hover:bg-blue-700 px-5 py-1 text-sm"
+                />
 
                 {localDevice.id && (
-                    <button
+                    <ButtonComponent
+                        title="Delete"
                         onClick={() => onDelete(localDevice.id)}
-                        className="rounded bg-red-600 px-3 py-2 text-sm text-white"
-                    >
-                        Delete
-                    </button>
+                        className="bg-red-600 hover:bg-red-700 px-2 py-1 text-sm"
+                    />
                 )}
+
             </div>
         </div>
     );

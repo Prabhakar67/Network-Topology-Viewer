@@ -24,9 +24,9 @@ vi.mock("../../../hooks/useConnections", () => ({
     }),
 }));
 
-vi.mock("../../layout/Sidebar/Sidebar", () => ({
+vi.mock("../../layout/DeviceList/DeviceList", () => ({
     default: ({ open }: any) =>
-        open ? <div data-testid="sidebar">Sidebar</div> : null,
+        open ? <div data-testid="DeviceList">DeviceList</div> : null,
 }));
 
 vi.mock("../../devices/DeviceFilters", () => ({
@@ -91,10 +91,10 @@ describe("TopologyCanvas", () => {
         expect(screen.getByTestId("filters")).toBeInTheDocument();
     });
 
-    it("opens sidebar when menu button is clicked", () => {
+    it("opens DeviceList when menu button is clicked", () => {
         render(<TopologyCanvas />);
         fireEvent.click(screen.getByText("☰"));
-        expect(screen.getByTestId("sidebar")).toBeInTheDocument();
+        expect(screen.getByTestId("DeviceList")).toBeInTheDocument();
     });
 
     it("opens device drawer when Add Device button is clicked", () => {

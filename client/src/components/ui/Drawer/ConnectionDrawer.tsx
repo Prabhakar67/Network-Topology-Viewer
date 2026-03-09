@@ -1,5 +1,6 @@
 
 import ConnectionForm from "../../connections/ConnectionForm";
+import ButtonComponent from "../Button/Button";
 
 interface Props {
     edge: any;
@@ -39,6 +40,25 @@ const ConnectionDrawer = ({
                 onSave={onSave}
                 onDelete={onDelete}
             />
+
+
+            <div className="flex gap-2">
+                <ButtonComponent
+                    title="Save"
+                    onClick={() => onSave(edge)}
+                    className="flex-1 rounded bg-blue-600  hover:bg-blue-700 px-3 py-2 text-sm text-white"
+
+                />
+
+                <ButtonComponent
+                    title="Delete"
+                    onClick={() => onDelete(edge.id)}
+                    className="rounded bg-red-600 hover:bg-red-700 px-3 py-2 text-sm text-white"
+
+                />
+            </div>
+
+
         </div>
     );
 };

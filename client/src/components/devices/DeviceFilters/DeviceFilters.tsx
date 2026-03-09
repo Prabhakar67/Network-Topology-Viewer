@@ -10,7 +10,8 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
     const [status, setStatus] = useState("");
 
     return (
-        <div>
+        <div className="w-full border-b border-gray-300 bg-white px-4 py-2 flex items-center gap-3">
+
             <input
                 type="text"
                 placeholder="Search device..."
@@ -20,6 +21,7 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
                     setSearch(value);
                     onSearch(value);
                 }}
+                className="border border-gray-300 rounded px-2 py-1 text-sm w-48 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
 
             <select
@@ -29,6 +31,7 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
                     setStatus(value);
                     onStatusFilter(value);
                 }}
+                className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
                 <option value="">All Status</option>
                 <option value="online">Online</option>
@@ -36,6 +39,7 @@ const DeviceFilters = ({ onSearch, onStatusFilter }: Props) => {
                 <option value="offline">Offline</option>
                 <option value="maintenance">Maintenance</option>
             </select>
+
         </div>
     );
 };

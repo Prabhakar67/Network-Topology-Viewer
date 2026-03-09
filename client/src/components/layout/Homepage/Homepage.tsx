@@ -1,7 +1,8 @@
 import { useState } from "react";
 import TopologyCanvas from "../../topology/TopologyCanvas";
-import Sidebar from "../Sidebar";
+import DeviceList from "../DeviceList";
 import { useDevices } from "../../../hooks/useDevices";
+import ButtonComponent from "../../ui/Button/Button";
 
 const HomePage = () => {
     const [view, setView] = useState<"home" | "canvas" | "devices">("home");
@@ -21,19 +22,17 @@ const HomePage = () => {
 
                     <div className="flex gap-4">
 
-                        <button
+                        <ButtonComponent
+                            title="Open Network Canvas"
                             onClick={() => setView("canvas")}
-                            className="rounded-lg bg-blue-600 px-6 py-3 text-white shadow hover:bg-blue-700"
-                        >
-                            Open Network Canvas
-                        </button>
+                            className="bg-blue-600 hover:bg-blue-700 px-3 py-3"
+                        />
 
-                        <button
+                        <ButtonComponent
+                            title="View Device List"
                             onClick={() => setView("devices")}
-                            className="rounded-lg bg-green-600 px-6 py-3 text-white shadow hover:bg-green-700"
-                        >
-                            View Device List
-                        </button>
+                            className="bg-green-600 hover:bg-green-700 px-3 py-3"
+                        />
 
                     </div>
                 </div>
@@ -44,12 +43,11 @@ const HomePage = () => {
                 <div className="h-full w-full">
 
                     <div className="absolute left-4 top-4 z-50">
-                        <button
+                        <ButtonComponent
+                            title="← Back"
                             onClick={() => setView("home")}
-                            className="rounded-md bg-gray-800 px-4 py-2 text-white"
-                        >
-                            ← Back
-                        </button>
+                            className="bg-gray-800 hover:bg-gray-900 px-2 py-2 text-sm"
+                        />
                     </div>
 
                     <TopologyCanvas />
@@ -61,15 +59,14 @@ const HomePage = () => {
                 <div className="h-full w-full">
 
                     <div className="absolute left-4 top-4 z-50">
-                        <button
+                        <ButtonComponent
+                            title="← Back"
                             onClick={() => setView("home")}
-                            className="rounded-md bg-gray-800 px-4 py-2 text-white"
-                        >
-                            ← Back
-                        </button>
+                            className="bg-gray-800 hover:bg-gray-900 px-2 py-2 text-sm"
+                        />
                     </div>
 
-                    <Sidebar devices={devices} />
+                    <DeviceList devices={devices} />
 
                 </div>
             )}

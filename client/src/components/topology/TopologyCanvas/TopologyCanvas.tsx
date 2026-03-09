@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
     Background,
     Controls,
@@ -20,13 +20,13 @@ import DeviceDrawer from "../../ui/Drawer/DeviceDrawer";
 import ConnectionDrawer from "../../ui/Drawer/ConnectionDrawer";
 
 import DeviceFilters from "../../devices/DeviceFilters";
-import Sidebar from "../../layout/Sidebar/Sidebar";
 
 import deviceService from "../../../services/deviceService";
 import connectionService from "../../../services/connectionService";
 
 import { notify } from "../../ui/Toast/toast";
 import ButtonComponent from "../../ui/Button/Button";
+import { useFilteredDevices } from "../../../hooks/useFilteredDevices";
 
 const createEmptyDevice = () => ({
     name: "",
@@ -47,24 +47,16 @@ const TopologyCanvas = () => {
     const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
-    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { devices, refresh: refreshDevices } = useDevices();
     const { connections, refresh: refreshConnections } = useConnections();
 
 
-    const filteredDevices = useMemo(() => {
-        return devices.filter((device) => {
-            const matchesSearch = device.name
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
-
-            const matchesStatus =
-                !statusFilter || device.status === statusFilter;
-
-            return matchesSearch && matchesStatus;
-        });
-    }, [devices, searchTerm, statusFilter]);
+    const filteredDevices = useFilteredDevices(
+        devices,
+        searchTerm,
+        statusFilter
+    );
 
     useEffect(() => {
         const formattedNodes: Node[] = filteredDevices.map((device) => ({
@@ -182,10 +174,9 @@ const TopologyCanvas = () => {
             <div style={{ flex: 1, height: "100%" }}>
                 <div className="flex items-center justify-center">
                     <ButtonComponent
-                        title={"Add Device"}
-                        onSearch={setSearchTerm}
-                        onStatusFilter={setStatusFilter}
-                        onAddDevice={handleAddDevice}
+                        title="Add Device"
+                        onClick={handleAddDevice}
+                        className="bg-blue-600 hover:bg-blue-700 px-2 py-2"
                     />
 
                 </div>
