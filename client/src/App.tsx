@@ -9,7 +9,6 @@ function App() {
       position="top-right"
       toastOptions={{ duration: 3000, }} />
     <Header />
-    {/* <TopologyCanvas /> */}
     <HomePage />
   </>
   );
