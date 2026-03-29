@@ -1,55 +1,50 @@
 import { Handle, Position } from "reactflow";
+import { Server, Router, Shield, Network } from "lucide-react";
 
-interface Props {
-    data: {
-        label: string;
-        status?: string;
-        onClick?: () => void;
-    };
-}
 
-const statusBorderClass = (status?: string) => {
-    switch (status) {
-        case "online":
-            return "border-green-500";
-        case "warning":
-            return "border-yellow-400";
-        case "offline":
-            return "border-red-500";
-        case "maintenance":
-            return "border-blue-500";
+const getIcon = (type: string) => {
+    switch (type) {
+        case "router":
+            return <Router size={18} />;
+        case "switch":
+            return <Network size={18} />;
+        case "server":
+            return <Server size={18} />;
+        case "firewall":
+            return <Shield size={18} />;
         default:
-            return "border-gray-400";
+            return <Server size={18} />;
     }
 };
 
-const DeviceNode = ({ data }: Props) => {
+const getBorderColor = (status: string) => {
+    switch (status) {
+        case "online":
+            return "border-green-500";
+        case "offline":
+            return "border-red-500";
+        case "warning":
+            return "border-yellow-500";
+        default:
+            return "border-gray-300";
+    }
+};
+
+const DeviceNode = ({ data }: any) => {
     return (
         <div
-            onClick={() => {
-                data.onClick?.();
-            }}
-            className={`
-        min-w-[120px]
-        rounded-lg
-        border-2
-        ${statusBorderClass(data.status)}
-        bg-white
-        text-gray-900
-        font-semibold
-        text-center
-        px-3
-        py-2
-        cursor-pointer
-        shadow-sm
-        hover:shadow-md
-        transition
-      `}
+            className={`px-3 py-2 bg-white border-2 rounded-lg shadow flex flex-col items-center
+${data.selected
+                    ? "border-blue-500 ring-2 ring-blue-200 scale-105"
+                    : getBorderColor(data.status)}
+`}
         >
-            <div className="mb-1">{data.label}</div>
+            {getIcon(data.type)}
 
-            <Handle type="target" position={Position.Top} />
-            <Handle type="source" position={Position.Bottom} />
+            <span className="text-sm font-medium">{data.label}</span>
+
+            <Handle type="source" position={Position.Right} />
+            <Handle type="target" position={Position.Left} />
         </div>
     );
 };

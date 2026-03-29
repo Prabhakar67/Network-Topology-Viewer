@@ -1,15 +1,13 @@
 
 import { Toaster } from "react-hot-toast";
-import Header from "./components/layout/Header/Header";
-import HomePage from "./components/layout/Homepage/Homepage";
+import TopologyCanvas from "./components/topology/TopologyCanvas";
 
 function App() {
   return (<>
     <Toaster
       position="top-right"
       toastOptions={{ duration: 3000, }} />
-    <Header />
-    <HomePage />
+    <TopologyCanvas />
   </>
   );
 }

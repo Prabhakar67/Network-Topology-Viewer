@@ -1,4 +1,4 @@
-
+import { useState, useEffect } from "react";
 import ConnectionForm from "../../connections/ConnectionForm";
 import ButtonComponent from "../Button/Button";
 
@@ -16,13 +16,20 @@ const ConnectionDrawer = ({
     onDelete,
 }: Props) => {
 
-    if (!edge) return null;
+    const [localEdge, setLocalEdge] = useState(edge);
+
+    useEffect(() => {
+        setLocalEdge(edge);
+    }, [edge]);
+
+    if (!localEdge) return null;
 
     return (
         <div className="fixed top-0 right-0 z-50 h-screen w-[320px] border-l border-gray-200 bg-white p-4 shadow-xl">
 
             {/* Header */}
             <div className="mb-4 flex items-center justify-between">
+
                 <h3 className="text-lg font-semibold text-gray-800">
                     Edit Connection
                 </h3>
@@ -33,35 +40,34 @@ const ConnectionDrawer = ({
                 >
                     ✕
                 </button>
+
             </div>
 
+            {/* Form */}
             <ConnectionForm
-                edge={edge}
-                onSave={onSave}
-                onDelete={onDelete}
+                edge={localEdge}
+                setEdge={setLocalEdge}
             />
 
+            {/* Actions */}
+            <div className="flex gap-2 mt-4">
 
-            <div className="flex gap-2">
                 <ButtonComponent
                     title="Save"
-                    onClick={() => onSave(edge)}
-                    className="flex-1 rounded bg-blue-600  hover:bg-blue-700 px-3 py-2 text-sm text-white"
-
+                    onClick={() => onSave(localEdge)}
+                    className="flex-1 rounded bg-blue-600 hover:bg-blue-700 px-3 py-2 text-sm text-white"
                 />
 
                 <ButtonComponent
                     title="Delete"
-                    onClick={() => onDelete(edge.id)}
+                    onClick={() => onDelete(localEdge.id)}
                     className="rounded bg-red-600 hover:bg-red-700 px-3 py-2 text-sm text-white"
-
                 />
-            </div>
 
+            </div>
 
         </div>
     );
 };
 
 export default ConnectionDrawer;
-

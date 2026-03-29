@@ -1,5 +1,7 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import type { Edge, Connection } from "reactflow";
+import { MarkerType } from "reactflow";
+
 import connectionService from "../../../services/connectionService";
 import { notify } from "../../ui/Toast/toast";
 
@@ -14,27 +16,42 @@ const ConnectionEdge = ({
     onEdgeClick,
     refreshConnections,
 }: Props) => {
-    // edges build
-    const edges: Edge[] = useMemo(() => {
-        return connections.map((conn) => ({
-            id: String(conn.id),
-            source: String(conn.source_device_id),
-            target: String(conn.target_device_id),
-            label: conn.label,
-            animated: conn.status === "online",
 
-            status: conn.status,
-            bandwidth: conn.bandwidth,
-            connection_type: conn.connection_type,
-        }));
-    }, [connections]);
+    const edges: Edge[] = connections.map((conn) => ({
+        id: String(conn.id),
+        source: String(conn.source_device_id),
+        target: String(conn.target_device_id),
 
-    // new connection create
+        type: "smoothstep",
+
+        label: conn.label || "1Gbps",
+
+        animated: true,
+
+        style: {
+            stroke: "#3b82f6",
+            strokeWidth: 2,
+        },
+
+        markerEnd: {
+            type: MarkerType.ArrowClosed,
+        },
+
+        // important for edit drawer
+        data: {
+            connection: conn
+        }
+    }));
+
+
+    // create new connection
     const onConnect = useCallback(
         async (params: Connection) => {
+
             if (!params.source || !params.target) return;
 
             try {
+
                 await connectionService.create({
                     source_device_id: Number(params.source),
                     target_device_id: Number(params.target),
@@ -45,19 +62,23 @@ const ConnectionEdge = ({
                 });
 
                 await refreshConnections();
-                notify.success("new connection successfully");
+
+                notify.success("Connection created successfully");
+
             } catch (error) {
                 console.error("Connection create failed", error);
-                notify.error("connection create failed");
+                notify.error("Connection create failed");
             }
+
         },
         [refreshConnections]
     );
 
+
     return {
         edges,
         onConnect,
-        onEdgeClick,
+        onEdgeClick
     };
 };
 
